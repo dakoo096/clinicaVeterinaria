@@ -1,24 +1,31 @@
-🐾 Sistema de Gestión para Clínica Veterinaria
+# 🐾 Sistema de Gestión para Clínica Veterinaria
+
 Este proyecto es una aplicación web para la gestión de una clínica veterinaria, donde puedes registrar, editar y eliminar información de dueños, mascotas y sus atenciones médicas. Además, puedes consultar la historia clínica de cada mascota de manera sencilla.
 
-📋 Funcionalidades
-Registro de Dueños y Mascotas: Permite agregar nuevos dueños y sus respectivas mascotas.
-Vinculación Dueño-Mascota: Un dueño puede estar asociado a varias mascotas.
-Registro de Atenciones: Posibilidad de registrar cada visita médica y vincularla a la mascota.
-Historial Clínico: Consulta, edición y eliminación de las atenciones médicas de cada mascota.
-Impresión de Historias Clínicas: Genera un documento imprimible con la historia clínica completa de la mascota.
-🛠️ Tecnologías utilizadas
-Java JDK 17: Lenguaje de programación principal.
-Spring Boot: Framework para el desarrollo del backend del proyecto.
-MySQL: Base de datos relacional para almacenar la información de dueños, mascotas y atenciones.
-Thymeleaf: Motor de plantillas utilizado para generar vistas HTML dinámicas.
-Bootstrap: Framework CSS para el diseño y estilo de la interfaz de usuario.
-🎯 Características
-Registro de dueños y mascotas: Agrega nuevos dueños y asocia múltiples mascotas a cada uno.
-Registro de atenciones: Registra cada visita médica de las mascotas y consulta su historial.
-Edición de datos: Modifica los detalles de las mascotas y las atenciones según sea necesario.
-Eliminación de registros: Borra datos de mascotas y atenciones si ya no son relevantes.
-Impresión de historias clínicas: Crea un informe imprimible de la historia clínica de cada mascota.
+## 📋 Funcionalidades
+
+- **Registro de Dueños y Mascotas**: Permite agregar nuevos dueños y sus respectivas mascotas.
+- **Vinculación Dueño-Mascota**: Un dueño puede estar asociado a varias mascotas.
+- **Registro de Atenciones**: Posibilidad de registrar cada visita médica y vincularla a la mascota.
+- **Historial Clínico**: Consulta, edición y eliminación de las atenciones médicas de cada mascota.
+- **Impresión de Historias Clínicas**: Genera un documento imprimible con la historia clínica completa de la mascota.
+
+## 🛠️ Tecnologías utilizadas
+
+- **Java JDK 17**: Lenguaje de programación principal.
+- **Spring Boot**: Framework para el desarrollo del backend del proyecto.
+- **MySQL**: Base de datos relacional para almacenar la información de dueños, mascotas y atenciones.
+- **Thymeleaf**: Motor de plantillas utilizado para generar vistas HTML dinámicas.
+- **Bootstrap**: Framework CSS para el diseño y estilo de la interfaz de usuario.
+
+## 🎯 Características
+
+- **Registro de dueños y mascotas**: Agrega nuevos dueños y asocia múltiples mascotas a cada uno.
+- **Registro de atenciones**: Registra cada visita médica de las mascotas y consulta su historial.
+- **Edición de datos**: Modifica los detalles de las mascotas y las atenciones según sea necesario.
+- **Eliminación de registros**: Borra datos de mascotas y atenciones si ya no son relevantes.
+- **Impresión de historias clínicas**: Crea un informe imprimible de la historia clínica de cada mascota.
+
 
 Video Explicativo del proyecto:
 https://youtu.be/woLy-Z_l_5o
