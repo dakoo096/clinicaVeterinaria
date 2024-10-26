@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <title>Registrarse</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!--BOOTSTRAP CSS-->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet" />
+    <style>
+      body {
+        background-color: #222831;
+      }
+
+      .card-header{
+        background-color: #31363F;
+      }
+      .card{
+        background-color: #EEEEEE;
+      }
+      .btn-cancelar{
+        background-color: #bf4343;
+        margin-right: 40px;
+        
+      }
+      .btn-cancelar:hover{
+        background-color: #a01313;
+        color:#EEEEEE
+        
+      }
+      .btn-registrar{
+        background-color: #76ABAE;
+    }
+    .btn-registrar:hover{
+        background-color: #5b8183;
+        color: #EEEEEE;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row justify-content-center mt-5">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header text-white">
+              <h3 class="text-center">Crear una cuenta</h3>
+            </div>
+            <div class="card-body">
+              <form th:action="@{/registro}" method="post">
+                <div class="mb-3">
+                  <label for="nombre" class="form-label">Nombre</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="name"
+                    name="nombre"
+                    required
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="email" class="form-label">Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    required
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="username" class="form-label">Usuario</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="username"
+                    name="username"
+                    required
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="password" class="form-label">Contraseña</label>
+                  <input
+                    type="password"
+                    class="form-control"
+                    id="password"
+                    name="password"
+                    required
+                    autocomplete="off"
+                  />
+                </div>
+                <div class="text-center">
+                  <a th:href="@{/login}" class="btn btn-cancelar">Cancelar</a>
+                  <button type="submit" class="btn btn-registrar">
+                    Registrarse
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!--BOOTSTRAP JS-->
+    <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+  </body>
+</html>
