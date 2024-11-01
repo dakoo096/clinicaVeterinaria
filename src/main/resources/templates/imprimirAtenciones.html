@@ -92,6 +92,7 @@
             <div th:each="atencion : ${atenciones}" class="mb-4 bg-light">
                 <input type="hidden" name="atencion.id_atencion" th:value="${atencion.id_atencion}">
                 <p class="datos">Motivo de la consulta: <span th:text="${atencion.titulo}"></span></p>
+                <p>Usuario que registró atención: <span th:text="${atencion.usuario.username}"></span></p>
                 <p>Fecha: <span  th:utext="${atencion.fecha_atencion.toString().replace('T', ' ')}"></span></p>
                 <p class="p-detalle">Detalle: <span th:text="${atencion.detalle_atencion}"></span></p>
             <hr class="divider p-0">
