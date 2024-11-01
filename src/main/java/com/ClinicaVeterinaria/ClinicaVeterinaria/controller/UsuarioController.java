@@ -63,7 +63,7 @@ public String layout(HttpSession session, Model model) {
             model.addAttribute("usuario",optionalUser.get());//mandamos el modelo a la vista
         }
     }
-    return "header"; // Asegúrate de que este archivo existe en resources/templates
+    return "header"; // 
 } 
 
 @GetMapping("/logout")

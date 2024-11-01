@@ -34,4 +34,7 @@ public class Atencion {
     @JoinColumn(name = "id_mascota")//va a ser la fk para mascota
     private Mascota mascota;
 
+    @ManyToOne
+    @JoinColumn(name = "id_usuario")
+    private Usuario usuario;
 }

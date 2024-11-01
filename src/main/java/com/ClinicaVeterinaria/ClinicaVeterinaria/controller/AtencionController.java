@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +42,7 @@ public class AtencionController {
     }
 
     @GetMapping("/atenciones/traer/{id_mascota}")
-    public String traerAtencionesPormascota(HttpSession session, @PathVariable Long id_mascota, Model model) {
+    public String traerAtencionesPorMascota(HttpSession session, @PathVariable Long id_mascota, Model model) {
         agregarUsuarioAlModelo(session, model);//traemos el metodo para agregar la sesion
         List<Atencion> atenciones = atencionService.findAllAtencionesByMascota(id_mascota);
         model.addAttribute("atenciones", atenciones);
@@ -55,12 +57,16 @@ public class AtencionController {
         agregarUsuarioAlModelo(session, model);//traemos el metodo para agregar la sesion
         Mascota mascota = mascotaService.findMascotaById(id_mascota).get();
         model.addAttribute("mascota", mascota);
+       
         return "registrarAtencion";
     }
 
     //guardamos una atencion
     @PostMapping("/atenciones/crear")
-    public String saveAtencion(@ModelAttribute Atencion atencion) {
+    public String saveAtencion(@ModelAttribute Atencion atencion,@AuthenticationPrincipal User user) {
+        //obtenemos el usu de la sesion actual por username
+        Optional<Usuario> usuarioSesion = usuarioService.findUsuarioByUsername(user.getUsername());
+        usuarioSesion.ifPresent(atencion::setUsuario);//establece que el usuario si solo se encuentra en la bd
         atencionService.saveAtencion(atencion);
         return "redirect:/fichas/traer";
     }
@@ -68,11 +74,13 @@ public class AtencionController {
     @GetMapping("/atenciones/traerEditar/{id_atencion}")
     public String traerEditarAtencion(HttpSession session, @PathVariable Long id_atencion, Model model) {
         agregarUsuarioAlModelo(session, model);//traemos el metodo para agregar la sesion
-        Atencion atencion = atencionService.findAtencionById(id_atencion).get();
-        if (atencion != null) {
-            Mascota mascota = atencion.getMascota(); // Asegúrate de que la mascota esté cargada
+        Optional<Atencion> atencionOptional = atencionService.findAtencionById(id_atencion);
+        if (atencionOptional.isPresent()) {
+            Atencion atencion = atencionOptional.get();
             model.addAttribute("atencion", atencion);
-            model.addAttribute("mascota", mascota); // Pasar la mascota asociada al modelo
+            model.addAttribute("mascota", atencion.getMascota()); // pasamos la mascota asociada a la atencion
+        }else{
+            //
         }
         return "editarAtencion";
     }

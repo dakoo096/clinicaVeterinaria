@@ -41,6 +41,7 @@
         <h1 class="text-center p-2"> Registrar nueva atencion</h1>
         <form th:action="@{/atenciones/crear}" method="post" class="w-50 mx-auto text-center mt-5">
             <input type="hidden" name="mascota.id_mascota" th:value="${mascota.id_mascota}">
+            <input type="hidden" name="atencion.usuario.username" th:value="${usuario.username}">
             <label for="titulo" class="form-label pt-3">Motivo de la consulta:</label>
             <input type="text" name="titulo" placeholder="Titulo" class="form-control" required>
             <label for="fecha_atencion" class="form-label pt-3">Fecha:</label>
