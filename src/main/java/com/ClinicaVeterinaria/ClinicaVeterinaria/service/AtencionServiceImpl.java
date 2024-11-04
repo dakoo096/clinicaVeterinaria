@@ -43,6 +43,7 @@ public class AtencionServiceImpl implements AtencionService {
         Atencion atencionDB = atencionRepository.findById(id_atencion).get();
         atencionDB.setTitulo(atencion.getTitulo());
         atencionDB.setDetalle_atencion(atencion.getDetalle_atencion());
+        atencionDB.setUsuario(atencionDB.getUsuario());
         atencionRepository.save(atencion);
     }
 

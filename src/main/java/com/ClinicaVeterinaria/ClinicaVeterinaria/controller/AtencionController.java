@@ -57,13 +57,13 @@ public class AtencionController {
         agregarUsuarioAlModelo(session, model);//traemos el metodo para agregar la sesion
         Mascota mascota = mascotaService.findMascotaById(id_mascota).get();
         model.addAttribute("mascota", mascota);
-       
+
         return "registrarAtencion";
     }
 
     //guardamos una atencion
     @PostMapping("/atenciones/crear")
-    public String saveAtencion(@ModelAttribute Atencion atencion,@AuthenticationPrincipal User user) {
+    public String saveAtencion(@ModelAttribute Atencion atencion, @AuthenticationPrincipal User user) {
         //obtenemos el usu de la sesion actual por username
         Optional<Usuario> usuarioSesion = usuarioService.findUsuarioByUsername(user.getUsername());
         usuarioSesion.ifPresent(atencion::setUsuario);//establece que el usuario si solo se encuentra en la bd
@@ -79,7 +79,7 @@ public class AtencionController {
             Atencion atencion = atencionOptional.get();
             model.addAttribute("atencion", atencion);
             model.addAttribute("mascota", atencion.getMascota()); // pasamos la mascota asociada a la atencion
-        }else{
+        } else {
             //
         }
         return "editarAtencion";
@@ -87,7 +87,6 @@ public class AtencionController {
 
     @PostMapping("/atenciones/editar/{id_atencion}")
     public String editAtencion(@PathVariable Long id_atencion, @ModelAttribute Atencion atencion) {
-        atencionService.findAtencionById(id_atencion);
         atencionService.updateAtencion(id_atencion, atencion);
         return "redirect:/fichas/traer";
     }
