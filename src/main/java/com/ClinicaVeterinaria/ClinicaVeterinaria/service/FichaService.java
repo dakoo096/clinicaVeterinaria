@@ -5,11 +5,12 @@
 package com.ClinicaVeterinaria.ClinicaVeterinaria.service;
 
 import com.ClinicaVeterinaria.ClinicaVeterinaria.entity.FichaDTO;
-import com.ClinicaVeterinaria.ClinicaVeterinaria.repository.MascotaRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public interface FichaService {
 
-
     public FichaDTO buscarPorNombreDeMascota(String nombre);
+    
+    public List<FichaDTO> obtenerFichas();
 }

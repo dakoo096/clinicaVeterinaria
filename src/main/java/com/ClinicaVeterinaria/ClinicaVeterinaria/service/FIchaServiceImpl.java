@@ -1,44 +1,56 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ClinicaVeterinaria.ClinicaVeterinaria.service;
 
 import com.ClinicaVeterinaria.ClinicaVeterinaria.entity.FichaDTO;
 import com.ClinicaVeterinaria.ClinicaVeterinaria.entity.Mascota;
 import com.ClinicaVeterinaria.ClinicaVeterinaria.repository.MascotaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-public class FIchaServiceImpl implements FichaService{
-    
+public class FIchaServiceImpl implements FichaService {
+
     @Autowired
     private MascotaRepository mascotaRepository;
-    
+
     @Override
     public FichaDTO buscarPorNombreDeMascota(String nombre) {
-// Buscar la mascota por nombre
         Mascota mascota = mascotaRepository.findByNombre(nombre);
-  // Verificar si la mascota fue encontrada
         if (mascota == null) {
-            return null; // Retorna null si no se encuentra
+            return null;
         }
-        // Crear el FichaDTO con los datos de la mascota y el dueño
+
+        return mapToFichaDTO(mascota);
+    }
+
+    @Override
+    public List<FichaDTO> obtenerFichas() {
+        return mascotaRepository.findAll().stream()
+                .map(this::mapToFichaDTO)
+                .collect(Collectors.toList());
+    }
+
+    private FichaDTO mapToFichaDTO(Mascota mascota) {
         FichaDTO ficha = new FichaDTO();
         ficha.setId_mascota(mascota.getId_mascota());
         ficha.setNombre(mascota.getNombre());
-        ficha.setEspecie(mascota.getEspecie());
-        ficha.setRaza(mascota.getRaza());
+        
+        if (mascota.getRaza() != null) {
+            ficha.setRaza(mascota.getRaza().getNombre());
+            if (mascota.getRaza().getEspecie() != null) {
+                ficha.setEspecie(mascota.getRaza().getEspecie().getNombre());
+            }
+        }
+        
         ficha.setColor(mascota.getColor());
-        ficha.setNombre_duenio(mascota.getDuenio().getNombre_duenio());
-        ficha.setApellido_duenio(mascota.getDuenio().getApellido());
-        ficha.setCelular(mascota.getDuenio().getCelular());
-        ficha.setDni(mascota.getDuenio().getDni());
-
+        
+        if (mascota.getPersona() != null) {
+            ficha.setNombre_duenio(mascota.getPersona().getNombre());
+            ficha.setApellido_duenio(mascota.getPersona().getApellido());
+            ficha.setCelular(mascota.getPersona().getTelefono());
+            ficha.setDni(mascota.getPersona().getDni());
+        }
         return ficha;
     }
-    
-  
 }

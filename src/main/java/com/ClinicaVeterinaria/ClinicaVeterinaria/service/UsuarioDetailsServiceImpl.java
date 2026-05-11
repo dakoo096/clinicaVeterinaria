@@ -1,8 +1,10 @@
 package com.ClinicaVeterinaria.ClinicaVeterinaria.service;
 
 import com.ClinicaVeterinaria.ClinicaVeterinaria.entity.Usuario;
+import com.ClinicaVeterinaria.ClinicaVeterinaria.entity.Rol;
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,12 +26,17 @@ public class UsuarioDetailsServiceImpl implements UserDetailsService {
         Optional<Usuario> optionalUser = usuarioService.findUsuarioByUsername(username);
 
         if (optionalUser.isPresent()) {
-            session.setAttribute("user_session_id", optionalUser.get().getId_usuario());
             Usuario usuario = optionalUser.get();
+            session.setAttribute("user_session_id", usuario.getId_usuario());
+            
+            String[] roles = usuario.getRoles().stream()
+                    .map(Rol::getNombre)
+                    .toArray(String[]::new);
+
             return User.builder()
                     .username(usuario.getUsername())
-                    .password(usuario.getPassword())
-                    .roles()
+                    .password(usuario.getPassword_hash())
+                    .roles(roles)
                     .build();
         } else {
             throw new UsernameNotFoundException("¡Usuario no encontrado!");

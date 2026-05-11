@@ -6,23 +6,19 @@ import com.ClinicaVeterinaria.ClinicaVeterinaria.entity.Usuario;
 import com.ClinicaVeterinaria.ClinicaVeterinaria.service.AtencionService;
 import com.ClinicaVeterinaria.ClinicaVeterinaria.service.MascotaService;
 import com.ClinicaVeterinaria.ClinicaVeterinaria.service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/atenciones")
+@CrossOrigin(origins = "http://localhost:5173")
 public class AtencionController {
 
-    //inyectamos el servicio
     @Autowired
     private AtencionService atencionService;
 
@@ -30,82 +26,37 @@ public class AtencionController {
     private MascotaService mascotaService;
 
     @Autowired
-    UsuarioService usuarioService;
+    private UsuarioService usuarioService;
 
-    //creamos el metodo para poder traer la sesion actual a cada endpoint 
-    private void agregarUsuarioAlModelo(HttpSession session, Model model) {
-        Long userId = (Long) session.getAttribute("user_session_id");
-        if (userId != null) {
-            Optional<Usuario> optionalUser = usuarioService.findUsuarioById(userId);
-            optionalUser.ifPresent(usuario -> model.addAttribute("usuario", usuario));
+    @GetMapping("/mascota/{id_mascota}")
+    public ResponseEntity<List<Atencion>> traerAtencionesPorMascota(@PathVariable Long id_mascota) {
+        return ResponseEntity.ok(atencionService.findAllAtencionesByMascota(id_mascota));
+    }
+
+    @PostMapping("/crear")
+    public ResponseEntity<Atencion> saveAtencion(@RequestBody Atencion atencion, @AuthenticationPrincipal User user) {
+        if (user != null) {
+            usuarioService.findUsuarioByUsername(user.getUsername()).ifPresent(atencion::setUsuario);
         }
+        return ResponseEntity.ok(atencionService.saveAtencion(atencion));
     }
 
-    @GetMapping("/atenciones/traer/{id_mascota}")
-    public String traerAtencionesPorMascota(HttpSession session, @PathVariable Long id_mascota, Model model) {
-        agregarUsuarioAlModelo(session, model);//traemos el metodo para agregar la sesion
-        List<Atencion> atenciones = atencionService.findAllAtencionesByMascota(id_mascota);
-        model.addAttribute("atenciones", atenciones);
-        Mascota mascota = mascotaService.findMascotaById(id_mascota).get();
-        model.addAttribute("mascota", mascota);
-        return "listarAtenciones";
+    @GetMapping("/{id_atencion}")
+    public ResponseEntity<Atencion> traerAtencion(@PathVariable Long id_atencion) {
+        return atencionService.findAtencionById(id_atencion)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    //tomamos desde el boton agregar atencion y redirige a la vista corespondiente
-    @GetMapping("/atenciones/nuevaAtencion/{id_mascota}")//le pasamos el id de la mascota para que se vinculen las atenciones solo a esa mascota
-    public String registrarNuevaAtencion(HttpSession session, @PathVariable Long id_mascota, Model model) {
-        agregarUsuarioAlModelo(session, model);//traemos el metodo para agregar la sesion
-        Mascota mascota = mascotaService.findMascotaById(id_mascota).get();
-        model.addAttribute("mascota", mascota);
-
-        return "registrarAtencion";
-    }
-
-    //guardamos una atencion
-    @PostMapping("/atenciones/crear")
-    public String saveAtencion(@ModelAttribute Atencion atencion, @AuthenticationPrincipal User user) {
-        //obtenemos el usu de la sesion actual por username
-        Optional<Usuario> usuarioSesion = usuarioService.findUsuarioByUsername(user.getUsername());
-        usuarioSesion.ifPresent(atencion::setUsuario);//establece que el usuario si solo se encuentra en la bd
-        atencionService.saveAtencion(atencion);
-        return "redirect:/fichas/traer";
-    }
-
-    @GetMapping("/atenciones/traerEditar/{id_atencion}")
-    public String traerEditarAtencion(HttpSession session, @PathVariable Long id_atencion, Model model) {
-        agregarUsuarioAlModelo(session, model);//traemos el metodo para agregar la sesion
-        Optional<Atencion> atencionOptional = atencionService.findAtencionById(id_atencion);
-        if (atencionOptional.isPresent()) {
-            Atencion atencion = atencionOptional.get();
-            model.addAttribute("atencion", atencion);
-            model.addAttribute("mascota", atencion.getMascota()); // pasamos la mascota asociada a la atencion
-        } else {
-            //
-        }
-        return "editarAtencion";
-    }
-
-    @PostMapping("/atenciones/editar/{id_atencion}")
-    public String editAtencion(@PathVariable Long id_atencion, @ModelAttribute Atencion atencion) {
+    @PutMapping("/editar/{id_atencion}")
+    public ResponseEntity<String> editAtencion(@PathVariable Long id_atencion, @RequestBody Atencion atencion) {
         atencionService.updateAtencion(id_atencion, atencion);
-        return "redirect:/fichas/traer";
+        return ResponseEntity.ok("Atención actualizada correctamente");
     }
 
-    @GetMapping("/atenciones/borrar/{id_atencion}")
-    public String deleteAtencion(@PathVariable Long id_atencion) {
-        Atencion atencion = atencionService.findAtencionById(id_atencion).get();
+    @DeleteMapping("/borrar/{id_atencion}")
+    public ResponseEntity<String> deleteAtencion(@PathVariable Long id_atencion) {
         atencionService.deleteAtencion(id_atencion);
-        return "redirect:/fichas/traer";
+        return ResponseEntity.ok("Atención eliminada correctamente");
     }
-
-    //endpoint para imprimir todas las evoluciones
-    @GetMapping("/atenciones/imprimir/{id_mascota}")
-    public String imprimirEvoluciones(@PathVariable Long id_mascota, Model model) {
-        List<Atencion> atenciones = atencionService.findAllAtencionesByMascota(id_mascota);
-        model.addAttribute("atenciones", atenciones);
-        Mascota mascota = mascotaService.findMascotaById(id_mascota).get();
-        model.addAttribute("mascota", mascota);
-        return "imprimirAtenciones";
-    }
-
 }

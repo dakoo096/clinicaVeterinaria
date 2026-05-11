@@ -1,40 +1,55 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.ClinicaVeterinaria.ClinicaVeterinaria.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import java.time.LocalDateTime;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "atencion")
 public class Atencion {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_atencion;
-    private String titulo;
-    @DateTimeFormat(pattern = "dd-MM-yyyy'  'HH:mm:ss") // Ajustamos el formato de la fecha
-    private LocalDateTime fecha_atencion;
-    private String detalle_atencion;
+
+    @Column(nullable = false)
+    private LocalDateTime fecha;
+
+    @Column(columnDefinition = "TEXT")
+    private String diagnostico;
+
+    @Column(columnDefinition = "TEXT")
+    private String tratamiento;
+
+    @Column(columnDefinition = "TEXT")
+    private String observaciones;
 
     @ManyToOne
-    @JoinColumn(name = "id_mascota")//va a ser la fk para mascota
+    @JoinColumn(name = "id_turno")
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"atenciones", "mascotas", "persona", "usuario"})
+    private Turno turno;
+
+    @ManyToOne
+    @JoinColumn(name = "id_mascota", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties({"listaAtenciones", "persona"})
     private Mascota mascota;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
+    @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
+
+    @CreationTimestamp
+    @Column(updatable = false)
+    private LocalDateTime created_at;
+
+    @UpdateTimestamp
+    private LocalDateTime updated_at;
 }
